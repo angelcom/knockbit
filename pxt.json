@@ -1,6 +1,6 @@
 {
     "name": "knockbit",
-    "version": "0.0.2",
+    "version": "0.0.4",
     "description": "knock microbit by bluetooth",
     "license": "MIT",
     "dependencies": {
