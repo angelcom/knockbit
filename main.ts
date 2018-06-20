@@ -41,17 +41,25 @@ namespace knockbit_bluetooth {
         bluetooth.onBluetoothConnected(() => {
             BluetoothConnected = true
             basic.showIcon(IconNames.Diamond)
-            playMusic("powerup");
-            //basic.pause(100)
+            //playMusic("powerup");
+            //music.beginMelody(music.builtInMelody(Melodies.PowerUp), MelodyOptions.Once)
+            music.playTone(800, 50)
+            music.playTone(1000, 50)
+            music.playTone(1200, 50)
+            basic.pause(50)
         })
         bluetooth.onBluetoothDisconnected(() => {
             BluetoothConnected = false
             basic.showIcon(IconNames.SmallDiamond)
-            music.beginMelody(music.builtInMelody(Melodies.PowerDown), MelodyOptions.Once)
+            music.playTone(1200, 50)
+            music.playTone(1000, 50)
+            music.playTone(800, 50)
+            basic.pause(50)
+            //music.beginMelody(music.builtInMelody(Melodies.PowerDown), MelodyOptions.Once)
         })
         bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), () => {
             handleMessage();
-            basic.pause(100);
+            basic.pause(50);
         })
         initUltrasonic(us_port);
         // 初始化罗盘
@@ -178,7 +186,7 @@ namespace knockbit_bluetooth {
 
         switch (direction) {
             case "fwd":
-                var speed = parseInt(arg.substr(3));
+                let speed = parseInt(arg.substr(3));
                 //if (speed < 50 || speed > 250) speed = 80; // 不判断，完全由远端控制
                 M1A_SPEED = -speed, M2B_SPEED = speed;
                 break;
@@ -192,15 +200,16 @@ namespace knockbit_bluetooth {
             default:
                 // 此时自定义马达运转，3位标识，4位速度
                 if (arg.length > 7) {
-                    var m = direction;
-                    var s = parseInt(arg.substr(3, 4));
+                    let m = direction;
+                    let s = parseInt(arg.substr(3, 4));
                     setSpeed(m, s);
                 }
                 if (arg.length >= 14) {
-                    var m = arg.substr(7, 3);
-                    var s = parseInt(arg.substr(10, 4));
+                    let m = arg.substr(7, 3);
+                    let s = parseInt(arg.substr(10, 4));
                     setSpeed(m, s);
                 }
+                break;
         }
         motorRestore();
     }
@@ -341,6 +350,9 @@ namespace knockbit_bluetooth {
             case "lefttriangle":
                 basic.showIcon(IconNames.LeftTriangle);
                 break;
+            case "chessboard":
+                basic.showIcon(IconNames.Chessboard);
+                break;
             case "diamond":
                 basic.showIcon(IconNames.Diamond);
                 break;
@@ -355,6 +367,9 @@ namespace knockbit_bluetooth {
                 break;
             case "scissors":
                 basic.showIcon(IconNames.Scissors);
+                break;
+            default:
+                basic.clearScreen();
                 break;
         }
     }
@@ -380,13 +395,17 @@ namespace knockbit_bluetooth {
             //     music.beginMelody(music.builtInMelody(Melodies.Wedding), MelodyOptions.Once)
             //     break;
             case "stars":
-                music.beginMelody(music_stars, MelodyOptions.Once)
+                //music.beginMelody(music_stars, MelodyOptions.Once)
+                break;
+            case "stars2":
+                //music.beginMelody(music_stars2, MelodyOptions.Once)
                 break;
         }
     }
 
-    let music_stars: string[] = ['c4:2', 'c', 'g', 'g', 'a', 'a', 'g:4', 'f:2', 'f', 'e', 'e', 'd', 'd', 'c:4', 'g:2', 'g', 'f', 'f', 'e', 'e', 'd:4', 'g:2', 'g', 'f', 'f', 'e', 'e', 'd:4', 'c4:2', 'c', 'g', 'g', 'a', 'a', 'g:4', 'f:2', 'f', 'e', 'e', 'd', 'd', 'c:4'];
+    //let music_stars: string[] = ['c4:2', 'c', 'g', 'g', 'a', 'a', 'g:4', 'f:2', 'f', 'e', 'e', 'd', 'd', 'c:4', 'g:2', 'g', 'f', 'f', 'e', 'e', 'd:4', 'g:2', 'g', 'f', 'f', 'e', 'e', 'd:4', 'c4:2', 'c', 'g', 'g', 'a', 'a', 'g:4', 'f:2', 'f', 'e', 'e', 'd', 'd', 'c:4'];
 
+    //let music_stars2: string[] = ['c4:2', 'c', 'g', 'g', 'a', 'a', 'g:4']
 
     // 发送多次扫描结果，us9表示停车扫描
     function scanUltrasonic() {
